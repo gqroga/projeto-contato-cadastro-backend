@@ -33,7 +33,7 @@ public class PessoaController {
     @GetMapping("{id}")
     @Operation(summary = "Buscar pessoa por ID")
     public ResponseEntity<PessoaResponseDTO> BuscarPessoaPorId(@PathVariable(value = "id") Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(pessoaService.BuscarPorId(id));
+        return ResponseEntity.status(HttpStatus.OK).body(pessoaService.buscarPorId(id));
     }
 
     @GetMapping

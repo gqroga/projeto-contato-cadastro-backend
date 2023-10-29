@@ -1,5 +1,6 @@
 package br.com.cadastro.minsait.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,6 +15,7 @@ public class ContatoModel {
     private String contato;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pessoa_id")
+    @JsonIgnore
     private PessoaModel pessoa;
 
 

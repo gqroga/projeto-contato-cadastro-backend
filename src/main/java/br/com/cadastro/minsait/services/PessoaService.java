@@ -8,7 +8,7 @@ import java.util.List;
 public interface PessoaService {
     PessoaResponseDTO criarPessa(PessoaRequestDTO pessoaRequestDTO);
 
-    PessoaResponseDTO BuscarPorId(Long id);
+    PessoaResponseDTO buscarPorId(Long id);
 
     List<PessoaResponseDTO> buscarPessoas();
 

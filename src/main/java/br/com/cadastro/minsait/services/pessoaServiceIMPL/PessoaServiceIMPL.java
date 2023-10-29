@@ -6,6 +6,7 @@ import br.com.cadastro.minsait.exceptions.PessoaException;
 import br.com.cadastro.minsait.model.PessoaModel;
 import br.com.cadastro.minsait.repositories.PessoaRepository;
 import br.com.cadastro.minsait.services.PessoaService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -31,10 +32,10 @@ public class PessoaServiceIMPL implements PessoaService {
     }
 
     @Override
-    public PessoaResponseDTO BuscarPorId(Long id) {
+    public PessoaResponseDTO buscarPorId(Long id) {
         Optional<PessoaModel> pessoaModel = pessoaRepository.findById(id);
 
-        if (!pessoaModel.isPresent()){
+        if (pessoaModel.isEmpty()){
             throw new PessoaException("Pessoa não encontrada");
         }
 
@@ -45,15 +46,16 @@ public class PessoaServiceIMPL implements PessoaService {
     public List<PessoaResponseDTO> buscarPessoas() {
         return pessoaRepository.findAll().stream().map(pessoaModel -> modelMapper.map(pessoaModel, PessoaResponseDTO.class)).toList();
     }
-
+    @Transactional
     @Override
     public void deletar(Long id) {
         pessoaRepository.deleteById(id);
     }
 
+    @Transactional
     @Override
     public PessoaResponseDTO editarPessoa(Long id, PessoaRequestDTO pessoaRequestDTO) {
-        PessoaModel pessoaModel = modelMapper.map(BuscarPorId(id), PessoaModel.class);
+        PessoaModel pessoaModel = modelMapper.map(buscarPorId(id), PessoaModel.class);
         atualizandoPessoa(pessoaRequestDTO, pessoaModel);
         pessoaRepository.save(pessoaModel);
         return modelMapper.map(pessoaModel, PessoaResponseDTO.class);
