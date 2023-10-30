@@ -1,16 +1,24 @@
 package br.com.cadastro.minsait.services.pessoaServiceIMPL;
 
 import br.com.cadastro.minsait.dtos.PessoaResponseDTO.PessoaResponseDTO;
+import br.com.cadastro.minsait.dtos.contatoRequestDTO.ContatoRequestDTO;
+import br.com.cadastro.minsait.dtos.contatoResponseDTO.ContatoResponseDTO;
+import br.com.cadastro.minsait.dtos.malaDiretaResponseDTO.MalaDiretaResponseDTO;
 import br.com.cadastro.minsait.dtos.pessoaRequestDTO.PessoaRequestDTO;
+import br.com.cadastro.minsait.exceptions.ContatoException;
 import br.com.cadastro.minsait.exceptions.PessoaException;
+import br.com.cadastro.minsait.model.ContatoModel;
 import br.com.cadastro.minsait.model.PessoaModel;
+import br.com.cadastro.minsait.repositories.ContatoRepository;
 import br.com.cadastro.minsait.repositories.PessoaRepository;
+import br.com.cadastro.minsait.services.ContatoService;
 import br.com.cadastro.minsait.services.PessoaService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,8 +30,11 @@ public class PessoaServiceIMPL implements PessoaService {
 
      private final PessoaRepository pessoaRepository;
 
-     private final ModelMapper modelMapper;
+     private final ContatoRepository contatoRepository;
 
+     private final ContatoService contatoService;
+
+     private final ModelMapper modelMapper;
 
     @Override
     public PessoaResponseDTO criarPessa(PessoaRequestDTO pessoaRequestDTO) {
@@ -69,5 +80,36 @@ public class PessoaServiceIMPL implements PessoaService {
             pessoaModel.setCep(pessoaRequestDTO.getCep());
             pessoaModel.setCidade(pessoaRequestDTO.getCidade());
             pessoaModel.setUf(pessoaRequestDTO.getUf());
+    }
+
+    public PessoaResponseDTO adicionarContato(Long idPessoa, ContatoRequestDTO contatoRequestDTO) {
+        PessoaModel pessoaModel = modelMapper.map(buscarPorId(idPessoa), PessoaModel.class);
+
+        ContatoModel contatoModel = modelMapper.map(contatoService.criarContato(contatoRequestDTO), ContatoModel.class);
+
+        contatoModel.setPessoa(pessoaModel);
+        contatoRepository.save(contatoModel);
+
+        pessoaModel.getContatos().add(contatoModel);
+        return modelMapper.map(pessoaModel, PessoaResponseDTO.class);
+    }
+
+    @Override
+    public List<ContatoResponseDTO> buscarContatosPorPessoa(Long idPessoa) {
+        PessoaModel pessoaModel = modelMapper.map(buscarPorId(idPessoa),PessoaModel.class);
+
+        if (pessoaModel.getContatos().isEmpty()) {
+            throw new ContatoException("Não existe contato cadastrado.");
+        }
+
+        return pessoaModel.getContatos().stream().map(contato -> modelMapper.map(contato, ContatoResponseDTO.class)).toList();
+    }
+
+    @Override
+    public MalaDiretaResponseDTO buscarMalaDireta(Long id){
+        PessoaModel pessoaModel = modelMapper.map(buscarPorId(id),PessoaModel.class);
+        MalaDiretaResponseDTO malaDiretaResponseDTO = new MalaDiretaResponseDTO(pessoaModel.getId(),pessoaModel.getNome(),
+                pessoaModel.getEndereco() + " - CEP: " + pessoaModel.getCep() + " - " + pessoaModel.getCidade() + "/" + pessoaModel.getUf());
+        return malaDiretaResponseDTO;
     }
 }
