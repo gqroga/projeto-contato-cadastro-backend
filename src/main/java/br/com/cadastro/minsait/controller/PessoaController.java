@@ -28,48 +28,55 @@ public class PessoaController {
 
 
     @PostMapping()
-    @Operation(summary = "Criar pessoa")
-    public ResponseEntity<PessoaResponseDTO> SalvarPessoa(@RequestBody PessoaRequestDTO pessoaRequestDTO){
+    @Operation(summary = "Cria uma nova Pessoa")
+    public ResponseEntity<PessoaResponseDTO> SalvarPessoa(@RequestBody PessoaRequestDTO pessoaRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(pessoaService.criarPessa(pessoaRequestDTO));
 
     }
 
-    @GetMapping("{id}")
-    @Operation(summary = "Buscar pessoa por ID")
-    public ResponseEntity<PessoaResponseDTO> BuscarPessoaPorId(@PathVariable(value = "id") Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(pessoaService.buscarPorId(id));
-    }
-
     @GetMapping
+    @Operation(summary = "Lista todas as Pessoas")
     public ResponseEntity<List<PessoaResponseDTO>> listarPessoas() {
         return ResponseEntity.status(HttpStatus.OK).body(pessoaService.buscarPessoas());
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deletarPessoa (@PathVariable(value = "id")Long id) {
+    @Operation(summary = "Remove uma Pessoa por ID")
+    public ResponseEntity<Void> deletarPessoa(@PathVariable(value = "id") Long id) {
         pessoaService.deletar(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<PessoaResponseDTO> editarPessoa(@PathVariable(value = "id")Long id, @RequestBody PessoaRequestDTO pessoaRequestDTO){
+    @Operation(summary = "Atualiza uma Pessoa existente")
+    public ResponseEntity<PessoaResponseDTO> editarPessoa(@PathVariable(value = "id") Long id, @RequestBody PessoaRequestDTO pessoaRequestDTO) {
         return ResponseEntity.status(HttpStatus.OK).body(pessoaService.editarPessoa(id, pessoaRequestDTO));
     }
 
     @PostMapping("{idPessoa}/contatos")
+    @Operation(summary = "Adiciona um novo Contato a uma Pessoa")
     public ResponseEntity<PessoaResponseDTO> adicionarContato(@PathVariable(value = "idPessoa") Long idPessoa, @RequestBody @Valid ContatoRequestDTO contatoRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(pessoaService.adicionarContato(idPessoa, contatoRequestDTO));
     }
+
     @GetMapping("{idPessoa}/contatos")
-    public ResponseEntity<List<ContatoResponseDTO>> listarContatosPorPessoa (@PathVariable(value = "idPessoa") Long idPessoa) {
+    @Operation(summary = "lista todos os Contatos de uma Pessoa")
+    public ResponseEntity<List<ContatoResponseDTO>> listarContatosPorPessoa(@PathVariable(value = "idPessoa") Long idPessoa) {
         return ResponseEntity.status(HttpStatus.OK).body(pessoaService.buscarContatosPorPessoa(idPessoa));
     }
 
     @GetMapping("maladireta/{id}")
-    @Operation(summary = "Buscar MalaDireta por ID de pessoa")
+    @Operation(summary = "Retorna os dados de uma Pessoa por ID para Mala Direta")
     public ResponseEntity<MalaDiretaResponseDTO> BuscarMaladaDireta(@PathVariable(value = "id") Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(pessoaService.buscarMalaDireta(id));
     }
+
+    @GetMapping("{id}")
+    @Operation(summary = "Retorna os dados de uma Pessoa por ID")
+    public ResponseEntity<PessoaResponseDTO> BuscarPessoaPorId(@PathVariable(value = "id") Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(pessoaService.buscarPorId(id));
+    }
+
 }
 
 

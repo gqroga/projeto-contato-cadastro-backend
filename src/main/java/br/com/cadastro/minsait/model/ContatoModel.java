@@ -3,6 +3,8 @@ package br.com.cadastro.minsait.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "contato")
 public class ContatoModel {
@@ -60,5 +62,22 @@ public class ContatoModel {
 
     public void setPessoa(PessoaModel pessoa) {
         this.pessoa = pessoa;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ContatoModel other = (ContatoModel) obj;
+        return Objects.equals(id, other.id);
     }
 }

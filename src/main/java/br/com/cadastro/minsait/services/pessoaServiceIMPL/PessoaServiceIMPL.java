@@ -16,6 +16,7 @@ import br.com.cadastro.minsait.services.PessoaService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,14 +28,17 @@ import java.util.Optional;
 @AllArgsConstructor
 public class PessoaServiceIMPL implements PessoaService {
 
+    @Autowired
+    private final PessoaRepository pessoaRepository;
 
-     private final PessoaRepository pessoaRepository;
+    @Autowired
+    private final ContatoRepository contatoRepository;
 
-     private final ContatoRepository contatoRepository;
+    @Autowired
+    private final ContatoService contatoService;
 
-     private final ContatoService contatoService;
-
-     private final ModelMapper modelMapper;
+    @Autowired
+    private final ModelMapper modelMapper;
 
     @Override
     public PessoaResponseDTO criarPessa(PessoaRequestDTO pessoaRequestDTO) {

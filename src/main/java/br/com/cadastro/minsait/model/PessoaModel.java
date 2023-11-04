@@ -1,12 +1,12 @@
 package br.com.cadastro.minsait.model;
 
-import br.com.cadastro.minsait.repositories.PessoaRepository;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "pessoa")
@@ -26,7 +26,7 @@ public class PessoaModel  implements Serializable {
     @OneToMany(mappedBy = "pessoa", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ContatoModel> contatos = new ArrayList<>();
 
-    public PessoaModel () {
+    public PessoaModel() {
 
     }
 
@@ -95,4 +95,22 @@ public class PessoaModel  implements Serializable {
     public void setContatos(List<ContatoModel> contatos) {
         this.contatos = contatos;
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PessoaModel other = (PessoaModel) obj;
+        return Objects.equals(id, other.id);
+    }
+
 }
